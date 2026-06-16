@@ -1,0 +1,49 @@
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
+# Keep local .env excluded, but allow committing .env.example templates
+.env
+.env.*
+# allow deploy .env.example
+.env.example
+deploy/.env.example
+
+# Logs
+logs/
+*.log
+*.jsonl
+
+# Vector DB / datos locales
+vector_db/
+*.sqlite3
+*.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test
+.pytest_cache/
+.coverage
+
+# Jupyter
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.cache/

@@ -1,0 +1,45 @@
+# Stack de producción mínima: caddy (HTTPS) -> frontend -> backend.
+# Solo caddy publica puertos al host. frontend/backend solo en la red interna.
+
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: [.env]
+    expose: ["8000"]
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 512M }
+    networks: [interna]
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: "http://backend:8000"
+    expose: ["8501"]
+    depends_on: [backend]
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 256M }
+    networks: [interna]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      SITE_ADDRESS: "${SITE_ADDRESS:-:443}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [frontend, backend]
+    networks: [interna]
+
+networks:
+  interna:
+
+volumes:
+  caddy_data:
+  caddy_config:
