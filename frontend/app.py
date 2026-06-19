@@ -46,24 +46,16 @@ st.set_page_config(
     layout="centered",
 )
 
-st.markdown(f"""
-<div style="display: flex; align-items: center; gap: 20px; margin-bottom: 10px;">
-    <div style="text-align: center; border-right: 2px solid #ddd; padding-right: 20px;">
-        <img src="{KENNY_IMAGE_URL}" width="75" style="border-radius: 8px; display: block; margin: 0 auto;">
-        <p style="margin: 5px 0 0 0; font-size: 12px; font-weight: bold; color: #e67e22;">🔪 Muerete cerdo</p>
-        <p style="margin: 0; font-size: 11px; color: #888;">— Kenny</p>
-    </div>
-    <div style="flex: 1;">
-        <h1 style="margin: 0;">🚇 Agente Inteligente del Metro de Santiago</h1>
-        <p style="margin: 5px 0; color: #555;">Consulta tarifas, rutas, impedimentos y planifica tus viajes.</p>
-    </div>
-    <div style="text-align: center; border-left: 2px solid #ddd; padding-left: 20px;">
-        <img src="{CARTMAN_IMAGE_URL}" width="90" style="border-radius: 8px; display: block; margin: 0 auto;">
-        <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: bold; color: #c0392b;">🖕 ¡RESPETEN MI AUTORIDAD!</p>
-        <p style="margin: 0; font-size: 11px; color: #888;">— Eric Cartman</p>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+col1, col2, col3 = st.columns([1, 3, 1])
+with col1:
+    st.image(KENNY_IMAGE_URL, width=80)
+    st.markdown("<p style='text-align: center; font-size: 12px; font-weight: bold; color: #e67e22; margin: 0;'>🔪 Muerete cerdo<br><span style='color: #888; font-weight: normal;'>— Kenny</span></p>", unsafe_allow_html=True)
+with col2:
+    st.title("🚇 Agente Inteligente del Metro de Santiago")
+    st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
+with col3:
+    st.image(CARTMAN_IMAGE_URL, width=90)
+    st.markdown("<p style='text-align: center; font-size: 13px; font-weight: bold; color: #c0392b; margin: 0;'>🖕 ¡RESPETEN MI AUTORIDAD!<br><span style='color: #888; font-weight: normal;'>— Eric Cartman</span></p>", unsafe_allow_html=True)
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = f"user_{datetime.now().timestamp():.0f}"
