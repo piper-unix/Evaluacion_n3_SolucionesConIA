@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${1:-https://github.com/TU-USUARIO/agente-metro-santiago.git}"
+REPO_URL="${1:-https://github.com/piper-unix/Evaluacion_n3_SolucionesConIA.git}"
 APP_DIR="$HOME/app"
 
 echo ">> [1/4] Instalando Docker…"
@@ -56,8 +56,7 @@ echo "  1. cd $APP_DIR"
 echo "  2. cp .env.example .env"
 echo "  3. nano .env          # pegar OPENAI_API_KEY=sk-..."
 echo ""
-echo "  4. docker compose -f deploy/docker-compose.prod.yml build"
-echo "  5. docker compose -f deploy/docker-compose.prod.yml up -d"
+echo "  4. docker compose -f deploy/docker-compose.prod.yml up --build -d"
 echo ""
 echo "  6. Abrir en el navegador: http://$(curl -s http://checkip.amazonaws.com || echo '<IP_PUBLICA>')"
 echo ""

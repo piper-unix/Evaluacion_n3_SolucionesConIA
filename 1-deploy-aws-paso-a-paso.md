@@ -69,7 +69,7 @@ ssh -i labsuser.pem ec2-user@54.123.45.67
 ```bash
 # El bootstrap instala Docker + Compose y clona el repo
 sudo dnf install -y curl git
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/TU-USUARIO/agente-metro-santiago/main/deploy/bootstrap-ec2.sh)" -- https://github.com/TU-USUARIO/agente-metro-santiago.git
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/piper-unix/Evaluacion_n3_SolucionesConIA/main/deploy/bootstrap-ec2.sh)" -- https://github.com/piper-unix/Evaluacion_n3_SolucionesConIA.git
 
 # Ir al proyecto
 cd ~/app
