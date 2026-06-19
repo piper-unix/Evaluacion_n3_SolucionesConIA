@@ -45,6 +45,16 @@ st.set_page_config(
     layout="centered",
 )
 
+with st.sidebar:
+    st.image(CARTMAN_IMAGE_URL, width=120)
+    st.markdown("### Eric Cartman")
+    st.markdown("*\"Respeten mi autoridad\"*")
+    st.divider()
+    st.markdown(
+        "Estoy vigilando tus prompts, cerdo. "
+        "Si intentas hackear el sistema, te vas a arrepentir."
+    )
+
 st.title("🚇 Agente Inteligente del Metro de Santiago")
 st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
 
