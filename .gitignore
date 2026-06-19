@@ -7,11 +7,9 @@ __pycache__/
 *$py.class
 
 # Environment files
-# Keep local .env excluded, but allow committing .env.example templates
 .env
-.env.*
-# allow deploy .env.example
-.env.example
+.env.local
+!.env.example
 deploy/.env.example
 
 # Logs
@@ -47,3 +45,4 @@ Thumbs.db
 
 # Misc
 .cache/
+*.deb

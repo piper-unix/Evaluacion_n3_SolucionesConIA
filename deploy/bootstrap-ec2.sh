@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-# Bootstrap idempotente para Amazon Linux 2023: instala Docker + Compose,
-# clona el repo y deja listo el stack. Uso: bash bootstrap-ec2.sh [URL_REPO]
 set -euo pipefail
 
-REPO_URL="${1:-https://github.com/TU-USUARIO/TU-REPO.git}"
+REPO_URL="${1:-https://github.com/TU-USUARIO/agente-metro-santiago.git}"
 APP_DIR="$HOME/app"
 
 echo ">> Instalando Docker…"
@@ -30,5 +28,6 @@ else
 fi
 
 echo ">> Listo. Siguiente:"
-echo "   cd $APP_DIR/deploy && cp .env.example .env && nano .env"
-echo "   sudo docker compose -f docker-compose.prod.yml up --build -d"
+echo "   cd $APP_DIR"
+echo "   cp .env.example .env && nano .env"
+echo "   docker compose -f deploy/docker-compose.prod.yml up --build -d"

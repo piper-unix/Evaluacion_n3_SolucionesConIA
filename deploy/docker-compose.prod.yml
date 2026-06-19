@@ -1,41 +1,73 @@
-# Stack de producción mínima: caddy (HTTPS) -> frontend -> backend.
-# Solo caddy publica puertos al host. frontend/backend solo en la red interna.
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: ..
+      dockerfile: deploy/backend/Dockerfile
     restart: unless-stopped
-    env_file: [.env]
-    expose: ["8000"]
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    volumes:
+      - ../logs:/app/logs
+      - ../vector_db:/app/vector_db
     deploy:
       resources:
-        limits: { cpus: "1.0", memory: 512M }
-    networks: [interna]
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    networks:
+      - interna
 
   frontend:
-    build: ./frontend
+    build:
+      context: ..
+      dockerfile: deploy/frontend/Dockerfile
     restart: unless-stopped
     environment:
       BACKEND_URL: "http://backend:8000"
-    expose: ["8501"]
-    depends_on: [backend]
+    expose:
+      - "8501"
+    depends_on:
+      - backend
     deploy:
       resources:
-        limits: { cpus: "0.5", memory: 256M }
-    networks: [interna]
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    networks:
+      - interna
+
+  monitoring:
+    build:
+      context: ..
+      dockerfile: monitoring/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "8502"
+    depends_on:
+      - backend
+    networks:
+      - interna
 
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
-    ports: ["80:80", "443:443"]
+    ports:
+      - "80:80"
+      - "443:443"
     environment:
       SITE_ADDRESS: "${SITE_ADDRESS:-:443}"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-    depends_on: [frontend, backend]
-    networks: [interna]
+    depends_on:
+      - frontend
+      - backend
+      - monitoring
+    networks:
+      - interna
 
 networks:
   interna:
