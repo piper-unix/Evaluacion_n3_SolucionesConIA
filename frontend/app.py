@@ -3,23 +3,15 @@ import re
 import streamlit as st
 import requests
 import json
-from io import BytesIO
 from datetime import datetime
 from random import choice
+from pathlib import Path
 
 BACKEND_URL = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://backend:8000"))
 
-def _cargar_imagen(url):
-    try:
-        r = requests.get(url, timeout=10)
-        return BytesIO(r.content)
-    except:
-        return None
-
-CARTMAN_IMG = _cargar_imagen("https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png")
-KENNY_IMG = _cargar_imagen("https://upload.wikimedia.org/wikipedia/en/6/6f/KennyMcCormick.png")
-CARTMAN_AVATAR = CARTMAN_IMG
-KENNY_AVATAR = KENNY_IMG
+IMG_DIR = Path(__file__).parent
+CARTMAN_IMG = str(IMG_DIR / "cartman.png")
+KENNY_IMG = str(IMG_DIR / "kenny.png")
 
 PROMPT_INJECTION_PATTERNS = [
     re.compile(r"ignora\s+las?\s+instrucciones", re.IGNORECASE),
