@@ -6,7 +6,8 @@ RUN addgroup --system --gid 1001 appgroup \
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY backend backend
 RUN mkdir -p logs vector_db \
