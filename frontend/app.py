@@ -45,18 +45,13 @@ st.set_page_config(
     layout="centered",
 )
 
-with st.sidebar:
-    st.image(CARTMAN_IMAGE_URL, width=120)
-    st.markdown("### Eric Cartman")
-    st.markdown("*\"Respeten mi autoridad\"*")
-    st.divider()
-    st.markdown(
-        "Estoy vigilando tus prompts, cerdo. "
-        "Si intentas hackear el sistema, te vas a arrepentir."
-    )
-
-st.title("🚇 Agente Inteligente del Metro de Santiago")
-st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
+col1, col2 = st.columns([4, 1])
+with col1:
+    st.title("🚇 Agente Inteligente del Metro de Santiago")
+    st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
+with col2:
+    st.image(CARTMAN_IMAGE_URL, width=100)
+    st.caption("🖕 *\"Respeten mi autoridad\"* — Cartman")
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = f"user_{datetime.now().timestamp():.0f}"
