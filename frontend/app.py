@@ -9,6 +9,7 @@ from random import choice
 BACKEND_URL = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://backend:8000"))
 
 CARTMAN_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png"
+KENNY_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/6/6f/KennyMcCormick.png"
 
 PROMPT_INJECTION_PATTERNS = [
     re.compile(r"ignora\s+las?\s+instrucciones", re.IGNORECASE),
@@ -45,13 +46,24 @@ st.set_page_config(
     layout="centered",
 )
 
-col1, col2 = st.columns([4, 1])
-with col1:
-    st.title("🚇 Agente Inteligente del Metro de Santiago")
-    st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
-with col2:
-    st.image(CARTMAN_IMAGE_URL, width=100)
-    st.caption("🖕 *\"Respeten mi autoridad\"* — Cartman")
+st.markdown(f"""
+<div style="display: flex; align-items: center; gap: 20px; margin-bottom: 10px;">
+    <div style="text-align: center; border-right: 2px solid #ddd; padding-right: 20px;">
+        <img src="{KENNY_IMAGE_URL}" width="75" style="border-radius: 8px; display: block; margin: 0 auto;">
+        <p style="margin: 5px 0 0 0; font-size: 12px; font-weight: bold; color: #e67e22;">🔪 Muerete cerdo</p>
+        <p style="margin: 0; font-size: 11px; color: #888;">— Kenny</p>
+    </div>
+    <div style="flex: 1;">
+        <h1 style="margin: 0;">🚇 Agente Inteligente del Metro de Santiago</h1>
+        <p style="margin: 5px 0; color: #555;">Consulta tarifas, rutas, impedimentos y planifica tus viajes.</p>
+    </div>
+    <div style="text-align: center; border-left: 2px solid #ddd; padding-left: 20px;">
+        <img src="{CARTMAN_IMAGE_URL}" width="90" style="border-radius: 8px; display: block; margin: 0 auto;">
+        <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: bold; color: #c0392b;">🖕 ¡RESPETEN MI AUTORIDAD!</p>
+        <p style="margin: 0; font-size: 11px; color: #888;">— Eric Cartman</p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = f"user_{datetime.now().timestamp():.0f}"
