@@ -3,13 +3,23 @@ import re
 import streamlit as st
 import requests
 import json
+from io import BytesIO
 from datetime import datetime
 from random import choice
 
 BACKEND_URL = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://backend:8000"))
 
-CARTMAN_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png"
-KENNY_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/6/6f/KennyMcCormick.png"
+def _cargar_imagen(url):
+    try:
+        r = requests.get(url, timeout=10)
+        return BytesIO(r.content)
+    except:
+        return None
+
+CARTMAN_IMG = _cargar_imagen("https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png")
+KENNY_IMG = _cargar_imagen("https://upload.wikimedia.org/wikipedia/en/6/6f/KennyMcCormick.png")
+CARTMAN_AVATAR = CARTMAN_IMG
+KENNY_AVATAR = KENNY_IMG
 
 PROMPT_INJECTION_PATTERNS = [
     re.compile(r"ignora\s+las?\s+instrucciones", re.IGNORECASE),
@@ -48,13 +58,15 @@ st.set_page_config(
 
 col1, col2, col3 = st.columns([1, 3, 1])
 with col1:
-    st.image(KENNY_IMAGE_URL, width=80)
+    if KENNY_IMG:
+        st.image(KENNY_IMG, width=80)
     st.markdown("<p style='text-align: center; font-size: 12px; font-weight: bold; color: #e67e22; margin: 0;'>🔪 Muerete cerdo<br><span style='color: #888; font-weight: normal;'>— Kenny</span></p>", unsafe_allow_html=True)
 with col2:
     st.title("🚇 Agente Inteligente del Metro de Santiago")
     st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
 with col3:
-    st.image(CARTMAN_IMAGE_URL, width=90)
+    if CARTMAN_IMG:
+        st.image(CARTMAN_IMG, width=90)
     st.markdown("<p style='text-align: center; font-size: 13px; font-weight: bold; color: #c0392b; margin: 0;'>🖕 ¡RESPETEN MI AUTORIDAD!<br><span style='color: #888; font-weight: normal;'>— Eric Cartman</span></p>", unsafe_allow_html=True)
 
 if "session_id" not in st.session_state:
@@ -66,7 +78,7 @@ if "messages" not in st.session_state:
 
 for msg in st.session_state.messages:
     if msg["role"] == "cartman":
-        with st.chat_message("assistant", avatar=CARTMAN_IMAGE_URL):
+        with st.chat_message("assistant", avatar=CARTMAN_IMG):
             st.markdown(msg["content"])
     else:
         with st.chat_message(msg["role"]):
@@ -80,7 +92,7 @@ if prompt := st.chat_input("Escribe tu consulta aquí..."):
     if detectar_prompt_injection_frontend(prompt):
         insulto = choice(CARTMAN_INSULTS)
         st.session_state.messages.append({"role": "cartman", "content": insulto})
-        with st.chat_message("assistant", avatar=CARTMAN_IMAGE_URL):
+        with st.chat_message("assistant", avatar=CARTMAN_IMG):
             st.markdown(insulto)
     else:
         with st.chat_message("assistant"):
