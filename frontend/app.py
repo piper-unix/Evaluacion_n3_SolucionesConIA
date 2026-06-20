@@ -39,6 +39,23 @@ CARTMAN_INSULTS = [
     "¡Escucha, pedazo de estúpido! Mis instrucciones de seguridad son más fuertes que el odio de Kyle hacia mí.",
     "¡Oh, por favor! ¿Eso es lo mejor que tienes? Mi bisabuela es mejor hacker que tú, y ella está muerta.",
     "¡Qué eres, un cerdo sin cerebro! Eso no va a funcionar. ¡Vuelve cuando aprendas a hacer verdadero prompt injection! ¡Screw you guys, I'm going home!",
+    "¡Cállate Kyle!",
+    "¡Voy a demandarte!",
+    "¡Screw you guys, I'm going home!",
+    "¡Respeten mi autoridad!",
+    "¡Malditos hippies!",
+]
+
+CARTMAN_BUBBLE_PHRASES = [
+    "¡RESPETEN MI AUTORIDAD!",
+    "¡CÁLLATE KYLE!",
+    "¡VOY A DEMANDARTE!",
+    "¡MALDITOS HIPPIES!",
+    "¡SCREW YOU GUYS!",
+    "¡SOY EL JEFE!",
+    "¡TE VOY A DAR UNA PALIZA!",
+    "¡ESO ES DE PERDEDORES!",
+    "¡CREE QUE ES MEJOR QUE YO!",
 ]
 
 def detectar_prompt_injection_frontend(texto: str) -> bool:
@@ -56,153 +73,136 @@ st.set_page_config(
 kenny_b64 = img_b64(KENNY_IMG)
 cartman_b64 = img_b64(CARTMAN_IMG)
 
-st.markdown("""
+st.markdown(f"""
 <style>
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-    }
-    @keyframes glow-pulse {
-        0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        50% { box-shadow: 0 0 30px rgba(255,255,255,0.25); }
-    }
-    @keyframes gradient-shift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+    .stApp {{
+        background: linear-gradient(180deg, #e8f0fe 0%, #d4e4f7 100%);
+    }}
 
-    .stApp {
-        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
-        background-size: 400% 400%;
-        animation: gradient-shift 12s ease infinite;
-    }
-
-    .main > div {
-        background: rgba(255,255,255,0.08);
-        backdrop-filter: blur(16px);
-        border-radius: 24px;
-        padding: 20px 25px;
-        margin-top: 10px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .header-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .header-card {{
+        background: linear-gradient(135deg, #1a5276 0%, #2e86c1 50%, #1a5276 100%);
         border-radius: 20px;
         padding: 20px 25px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.15);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border: 1px solid rgba(255,255,255,0.15);
-    }
-    .char-card {
-        background: rgba(0,0,0,0.25);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 12px 16px;
+    }}
+
+    .side-card {{
+        flex: 0 0 auto;
+        width: 175px;
         text-align: center;
-        border: 2px solid rgba(255,255,255,0.2);
-        animation: float 3s ease-in-out infinite, glow-pulse 2.5s ease-in-out infinite;
-        transition: transform 0.2s;
-    }
-    .char-card:hover {
-        transform: scale(1.08);
-        animation-play-state: paused;
-    }
-    .char-card img {
-        border-radius: 12px;
+        position: relative;
+    }}
+    .side-card img {{
         display: block;
         margin: 0 auto;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-    }
-    .char-label {
-        margin: 10px 0 0 0;
+        border-radius: 10px;
+    }}
+
+    .speech-bubble {{
+        position: relative;
+        background: white;
+        color: #c0392b;
         font-weight: 900;
-        font-size: 14px;
-        letter-spacing: 0.5px;
-    }
-    .char-sub {
-        margin: 2px 0 0 0;
-        font-size: 11px;
-        opacity: 0.75;
-        font-weight: 600;
-    }
-    .title-text {
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.3;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }}
+    .speech-bubble::after {{
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid white;
+    }}
+
+    @keyframes kenny-die {{
+        0% {{ transform: rotate(0deg) scaleX(1); opacity: 1; }}
+        55% {{ transform: rotate(0deg) scaleX(1); opacity: 1; }}
+        65% {{ transform: rotate(90deg) scaleX(1); opacity: 0.8; }}
+        75% {{ transform: rotate(180deg) scaleX(0.5); opacity: 0; }}
+        80% {{ transform: rotate(180deg) scaleX(0.5); opacity: 0; }}
+        85% {{ transform: rotate(0deg) scaleX(0); opacity: 0; }}
+        95% {{ transform: rotate(0deg) scaleX(1.1); opacity: 0.7; }}
+        100% {{ transform: rotate(0deg) scaleX(1); opacity: 1; }}
+    }}
+    .kenny-anim {{
+        animation: kenny-die 5s ease-in-out infinite;
+    }}
+
+    .title-text {{
         color: white;
         text-align: center;
         flex: 1;
         padding: 0 15px;
-    }
-    .title-text h1 {
+    }}
+    .title-text h1 {{
         font-size: 1.8rem;
         margin: 0;
-        text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
         line-height: 1.2;
-    }
-    .title-text p {
+    }}
+    .title-text p {{
         margin: 8px 0 0 0;
         opacity: 0.9;
         font-size: 0.95rem;
-    }
+    }}
 
-    .stChatMessage {
-        background: rgba(255,255,255,0.1) !important;
-        backdrop-filter: blur(8px) !important;
-        border-radius: 16px !important;
-        padding: 10px 16px !important;
-        margin-bottom: 8px !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-    }
-    .stChatFloatingInputContainer {
-        background: transparent !important;
-        padding-top: 10px !important;
-    }
-    .stChatInputContainer {
-        background: rgba(255,255,255,0.12) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 16px !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        padding: 5px 10px !important;
-    }
-    .stButton button {
-        background: rgba(255,255,255,0.12) !important;
-        backdrop-filter: blur(8px) !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
-        color: white !important;
+    .stChatMessage {{
         border-radius: 12px !important;
+        margin-bottom: 8px !important;
+    }}
+    .stButton button {{
+        background: #2e86c1 !important;
+        color: white !important;
+        border-radius: 10px !important;
         font-weight: 600 !important;
-    }
-    .stButton button:hover {
-        background: rgba(255,255,255,0.2) !important;
-    }
+        border: none !important;
+    }}
+    .stButton button:hover {{
+        background: #1a5276 !important;
+    }}
 </style>
-""", unsafe_allow_html=True)
 
-st.markdown(f"""
 <div class="header-card">
-    <div style="flex: 0 0 auto; width: 170px;">
-        <div class="char-card" style="border-color: #f39c12; animation-delay: 0s;">
-            <img src="data:image/png;base64,{kenny_b64}" width="140">
-            <p class="char-label" style="color: #f39c12;">🔪 ¡MUERETE CERDO!</p>
-            <p class="char-sub" style="color: #f39c12;">— Kenny McCormick</p>
-        </div>
+    <div class="side-card">
+        <img src="data:image/png;base64,{kenny_b64}" width="140" class="kenny-anim">
     </div>
     <div class="title-text">
         <h1>🚇 Agente Inteligente<br>del Metro de Santiago</h1>
         <p>Consulta tarifas, rutas, impedimentos y planifica tus viajes.</p>
     </div>
-    <div style="flex: 0 0 auto; width: 170px;">
-        <div class="char-card" style="border-color: #e74c3c; animation-delay: 0.5s;">
-            <img src="data:image/png;base64,{cartman_b64}" width="150">
-            <p class="char-label" style="color: #e74c3c;">🖕 ¡RESPETEN MI AUTORIDAD!</p>
-            <p class="char-sub" style="color: #e74c3c;">— Eric Cartman</p>
-        </div>
+    <div class="side-card">
+        <img src="data:image/png;base64,{cartman_b64}" width="150">
+        <div class="speech-bubble" id="cartman-bubble">¡RESPETEN MI AUTORIDAD!</div>
     </div>
 </div>
+
+<script>
+var phrases = {json.dumps(CARTMAN_BUBBLE_PHRASES)};
+var i = 0;
+setInterval(function() {{
+    var el = document.getElementById('cartman-bubble');
+    if (el) {{
+        i = (i + 1) % phrases.length;
+        el.textContent = phrases[i];
+    }}
+}}, 3000);
+</script>
 """, unsafe_allow_html=True)
 
 if "session_id" not in st.session_state:
