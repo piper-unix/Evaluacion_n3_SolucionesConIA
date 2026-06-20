@@ -58,46 +58,78 @@ cartman_b64 = img_b64(CARTMAN_IMG)
 
 st.markdown("""
 <style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+    }
+    @keyframes glow-pulse {
+        0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        50% { box-shadow: 0 0 30px rgba(255,255,255,0.25); }
+    }
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .stApp {
+        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+        background-size: 400% 400%;
+        animation: gradient-shift 12s ease infinite;
+    }
+
+    .main > div {
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(16px);
+        border-radius: 24px;
+        padding: 20px 25px;
+        margin-top: 10px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.12);
+    }
+
     .header-card {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 20px;
-        padding: 25px 30px;
-        margin-bottom: 25px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        border: 1px solid rgba(255,255,255,0.15);
     }
     .char-card {
-        background: rgba(255,255,255,0.08);
+        background: rgba(0,0,0,0.25);
         backdrop-filter: blur(10px);
         border-radius: 16px;
-        padding: 15px 20px;
+        padding: 12px 16px;
         text-align: center;
-        border: 2px solid rgba(255,255,255,0.15);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.2);
+        animation: float 3s ease-in-out infinite, glow-pulse 2.5s ease-in-out infinite;
         transition: transform 0.2s;
     }
     .char-card:hover {
-        transform: scale(1.03);
+        transform: scale(1.08);
+        animation-play-state: paused;
     }
     .char-card img {
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         display: block;
         margin: 0 auto;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
     }
     .char-label {
-        margin: 12px 0 0 0;
+        margin: 10px 0 0 0;
         font-weight: 900;
-        font-size: 15px;
+        font-size: 14px;
         letter-spacing: 0.5px;
     }
     .char-sub {
         margin: 2px 0 0 0;
-        font-size: 12px;
-        opacity: 0.7;
-        font-weight: 500;
+        font-size: 11px;
+        opacity: 0.75;
+        font-weight: 600;
     }
     .title-text {
         color: white;
@@ -106,15 +138,46 @@ st.markdown("""
         padding: 0 15px;
     }
     .title-text h1 {
-        font-size: 1.9rem;
+        font-size: 1.8rem;
         margin: 0;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 12px rgba(0,0,0,0.3);
         line-height: 1.2;
     }
     .title-text p {
-        margin: 10px 0 0 0;
-        opacity: 0.85;
-        font-size: 1rem;
+        margin: 8px 0 0 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .stChatMessage {
+        background: rgba(255,255,255,0.1) !important;
+        backdrop-filter: blur(8px) !important;
+        border-radius: 16px !important;
+        padding: 10px 16px !important;
+        margin-bottom: 8px !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+    }
+    .stChatFloatingInputContainer {
+        background: transparent !important;
+        padding-top: 10px !important;
+    }
+    .stChatInputContainer {
+        background: rgba(255,255,255,0.12) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        padding: 5px 10px !important;
+    }
+    .stButton button {
+        background: rgba(255,255,255,0.12) !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+    }
+    .stButton button:hover {
+        background: rgba(255,255,255,0.2) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -122,7 +185,7 @@ st.markdown("""
 st.markdown(f"""
 <div class="header-card">
     <div style="flex: 0 0 auto; width: 170px;">
-        <div class="char-card" style="border-color: #e67e22;">
+        <div class="char-card" style="border-color: #f39c12; animation-delay: 0s;">
             <img src="data:image/png;base64,{kenny_b64}" width="140">
             <p class="char-label" style="color: #f39c12;">🔪 ¡MUERETE CERDO!</p>
             <p class="char-sub" style="color: #f39c12;">— Kenny McCormick</p>
@@ -133,7 +196,7 @@ st.markdown(f"""
         <p>Consulta tarifas, rutas, impedimentos y planifica tus viajes.</p>
     </div>
     <div style="flex: 0 0 auto; width: 170px;">
-        <div class="char-card" style="border-color: #c0392b;">
+        <div class="char-card" style="border-color: #e74c3c; animation-delay: 0.5s;">
             <img src="data:image/png;base64,{cartman_b64}" width="150">
             <p class="char-label" style="color: #e74c3c;">🖕 ¡RESPETEN MI AUTORIDAD!</p>
             <p class="char-sub" style="color: #e74c3c;">— Eric Cartman</p>
