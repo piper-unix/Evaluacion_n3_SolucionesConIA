@@ -1,5 +1,6 @@
 import os
 import re
+import base64
 import streamlit as st
 import requests
 import json
@@ -12,6 +13,10 @@ BACKEND_URL = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://bac
 IMG_DIR = Path(__file__).parent
 CARTMAN_IMG = str(IMG_DIR / "cartman.png")
 KENNY_IMG = str(IMG_DIR / "kenny.png")
+
+def img_b64(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
 PROMPT_INJECTION_PATTERNS = [
     re.compile(r"ignora\s+las?\s+instrucciones", re.IGNORECASE),
@@ -48,18 +53,94 @@ st.set_page_config(
     layout="centered",
 )
 
-col1, col2, col3 = st.columns([1, 3, 1])
-with col1:
-    if KENNY_IMG:
-        st.image(KENNY_IMG, width=80)
-    st.markdown("<p style='text-align: center; font-size: 12px; font-weight: bold; color: #e67e22; margin: 0;'>🔪 Muerete cerdo<br><span style='color: #888; font-weight: normal;'>— Kenny</span></p>", unsafe_allow_html=True)
-with col2:
-    st.title("🚇 Agente Inteligente del Metro de Santiago")
-    st.markdown("Consulta tarifas, rutas, impedimentos y planifica tus viajes.")
-with col3:
-    if CARTMAN_IMG:
-        st.image(CARTMAN_IMG, width=90)
-    st.markdown("<p style='text-align: center; font-size: 13px; font-weight: bold; color: #c0392b; margin: 0;'>🖕 ¡RESPETEN MI AUTORIDAD!<br><span style='color: #888; font-weight: normal;'>— Eric Cartman</span></p>", unsafe_allow_html=True)
+kenny_b64 = img_b64(KENNY_IMG)
+cartman_b64 = img_b64(CARTMAN_IMG)
+
+st.markdown("""
+<style>
+    .header-card {
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        border-radius: 20px;
+        padding: 25px 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .char-card {
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 15px 20px;
+        text-align: center;
+        border: 2px solid rgba(255,255,255,0.15);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
+    }
+    .char-card:hover {
+        transform: scale(1.03);
+    }
+    .char-card img {
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        display: block;
+        margin: 0 auto;
+    }
+    .char-label {
+        margin: 12px 0 0 0;
+        font-weight: 900;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+    .char-sub {
+        margin: 2px 0 0 0;
+        font-size: 12px;
+        opacity: 0.7;
+        font-weight: 500;
+    }
+    .title-text {
+        color: white;
+        text-align: center;
+        flex: 1;
+        padding: 0 15px;
+    }
+    .title-text h1 {
+        font-size: 1.9rem;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        line-height: 1.2;
+    }
+    .title-text p {
+        margin: 10px 0 0 0;
+        opacity: 0.85;
+        font-size: 1rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+<div class="header-card">
+    <div style="flex: 0 0 auto; width: 170px;">
+        <div class="char-card" style="border-color: #e67e22;">
+            <img src="data:image/png;base64,{kenny_b64}" width="140">
+            <p class="char-label" style="color: #f39c12;">🔪 ¡MUERETE CERDO!</p>
+            <p class="char-sub" style="color: #f39c12;">— Kenny McCormick</p>
+        </div>
+    </div>
+    <div class="title-text">
+        <h1>🚇 Agente Inteligente<br>del Metro de Santiago</h1>
+        <p>Consulta tarifas, rutas, impedimentos y planifica tus viajes.</p>
+    </div>
+    <div style="flex: 0 0 auto; width: 170px;">
+        <div class="char-card" style="border-color: #c0392b;">
+            <img src="data:image/png;base64,{cartman_b64}" width="150">
+            <p class="char-label" style="color: #e74c3c;">🖕 ¡RESPETEN MI AUTORIDAD!</p>
+            <p class="char-sub" style="color: #e74c3c;">— Eric Cartman</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = f"user_{datetime.now().timestamp():.0f}"
